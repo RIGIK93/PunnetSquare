@@ -31,7 +31,13 @@ class Allele:
     def __init__(self, genes: tuple[Gene, Gene]) -> None:
         if not genes[0].is_allele(genes[1]):
             raise Exception("Error! Cannot construct Allele class with non-allele genes!")
-        self.genes = genes
+        
+        # Dominant allele is ordered first for the sake of notation 
+        # and comparison (as I use ==) when calculating genotypes and phenotypes
+        if genes[1].is_dominant:
+            self.genes = (genes[1], genes[0])
+        else:
+            self.genes = genes
 
     # Returns a dominant gene or recessive, if no dominant genes present.
     # Also can be thought of as getting a trait

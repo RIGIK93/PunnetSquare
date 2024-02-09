@@ -26,5 +26,5 @@ for genotype, count in children.get_genotypes().items():
   print(f"{genotype} \t:\t {count} ({int(count/children_total * 100)}%)")
 
 print("\nPhenotypes:")
-for phenotype, count in children.get_genotypes().items():
+for phenotype, count in children.get_phenotypes().items():
   print(f"{phenotype} \t:\t {count} ({int(count/children_total * 100)}%)")
