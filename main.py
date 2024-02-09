@@ -20,10 +20,11 @@ table = PunnetSquare(children)
 print("\nPunnet Square:")
 table.display()
 
+children_total = len(children.children) * len(children.children[0])
 print("\nGenotypes:")
 for genotype, count in children.get_genotypes().items():
-  print(f"{genotype} \t:\t {count}")
+  print(f"{genotype} \t:\t {count} ({int(count/children_total * 100)}%)")
 
 print("\nPhenotypes:")
 for phenotype, count in children.get_genotypes().items():
-  print(f"{phenotype} \t:\t {count}")
+  print(f"{phenotype} \t:\t {count} ({int(count/children_total * 100)}%)")
