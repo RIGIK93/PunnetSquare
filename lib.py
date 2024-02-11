@@ -1,7 +1,6 @@
 from __future__ import annotations # imported to avoid forward references
 from tabulate import tabulate
 
-# Gene
 
 class Gene:
     def __init__(self, gene: str) -> None:
@@ -23,16 +22,18 @@ class Gene:
     @property
     def is_dominant(self) -> bool:
         return self.gene.isupper()
+    
+    def __str__(self) -> str:
+        return self.gene
 
 
-# Allele
 
 class Allele:
     def __init__(self, genes: tuple[Gene, Gene]) -> None:
         if not genes[0].is_allele(genes[1]):
             raise Exception("Error! Cannot construct Allele class with non-allele genes!")
         
-        # Dominant allele is ordered first for the sake of notation 
+        # Dominant allele comes first in tuple for the sake of notation 
         # and comparison (as I use ==) when calculating genotypes and phenotypes
         if genes[1].is_dominant:
             self.genes = (genes[1], genes[0])
@@ -46,8 +47,8 @@ class Allele:
             return self.genes[0]
         return self.genes[1]
     
-    def to_str(self) -> str:
-        return self.genes[0].gene + self.genes[1].gene
+    def __str__(self) -> str:
+        return str(self.genes[0]) + str(self.genes[1])
 
 
 class Chromosome:
@@ -78,8 +79,9 @@ class Chromosome:
     def is_compatible(self, other: Chromosome) -> bool:
         return self.get_traits() == other.get_traits()
     
-    def to_str(self) -> str:
-        return "".join([allele.to_str() for allele in self.alleles])
+    def __str__(self) -> str:
+        return "".join([str(allele) for allele in self.alleles])
+
 
 class Haploids:
 
@@ -106,14 +108,8 @@ class Haploids:
     
     def as_str_list(self) -> list[str]:
         def haploid_to_str(genes: list[Gene]) -> str:
-            return "".join([g.gene for g in genes])
+            return "".join([str(g) for g in genes])
         return [haploid_to_str(h) for h in self.haploids]
-
-    # checks whether two haploids are a match
-    # def is_fertilizible(mate: Haploids) -> bool:
-    # Replaced by Chromosome.is_compatible
-
-
 
 
 class OffSpring:
@@ -141,22 +137,19 @@ class OffSpring:
 
         self.children: list[list[Chromosome]] = create_children(sperm, eggs)
 
-    # Genotype
     def get_genotypes(self) -> dict[str, int]:
         genotypes: dict[str, int] = {}
 
         for row in self.children:
             for child in row:
-                genotypes[child.to_str()] = genotypes.get(child.to_str(), 0) + 1
+                genotypes[str(child)] = genotypes.get(str(child), 0) + 1
     
         return genotypes
-
-    # Phenotype (We can get it from fenotype, by purging come of its values)
 
     def get_phenotypes(self) -> dict[str, int]:
 
         def traits_to_str(genes: list[Gene]) -> str:
-            return "".join([g.gene for g in genes])
+            return "".join([str(g) for g in genes])
         
         phenotypes: dict[str, int] = {}
 
@@ -165,25 +158,22 @@ class OffSpring:
             phenotypes[phenotype] = phenotypes.get(phenotype, 0) + value
 
         return phenotypes
-        
 
 
 class PunnetSquare:
     def __init__(self, offspring: OffSpring) -> None:
         self.offspring = offspring
-        
-    # Display
-    def display(self) -> None:
+
+    def __str__(self) -> str:
         body = []
 
         for row in self.offspring.children:
             temp_row = []
             for child in row:
-                temp_row.append(child.to_str())
+                temp_row.append(str(child))
             body.append(temp_row)
 
         columns = self.offspring.eggs.as_str_list()
         rows = self.offspring.sperm.as_str_list()
 
-
-        print(tabulate(body, headers=rows, tablefmt="fancy_grid", showindex=columns))
+        return tabulate(body, headers=rows, tablefmt="fancy_grid", showindex=columns)

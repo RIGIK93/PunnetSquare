@@ -18,7 +18,7 @@ children = OffSpring(sperm, eggs)
 table = PunnetSquare(children)
 
 print("\nPunnet Square:")
-table.display()
+print(table)
 
 children_total = len(children.children) * len(children.children[0])
 print("\nGenotypes:")
